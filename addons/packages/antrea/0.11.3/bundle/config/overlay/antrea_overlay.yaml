@@ -35,9 +35,7 @@ featureGates:
 #! - netdev
 #! 'system' is the default value and corresponds to the kernel datapath. Use 'netdev' to run
 #! OVS in userspace mode. Userspace mode requires the tun device driver to be available.
-#@ if values.infraProvider == "docker":
-ovsDatapathType: system
-#@ end
+#!ovsDatapathType: system
 
 #! Name of the interface antrea-agent will create and use for host <--> pod communication.
 #! Make sure it doesn't conflict with your existing interfaces.
@@ -169,8 +167,13 @@ metadata:
     kapp.k14s.io/disable-default-label-scoping-rules: ""
 
 
-#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata": {"name": "antrea-agent"}})
+#@overlay/match by=overlay.subset({"kind":"DaemonSet","metadata":{"name": "antrea-agent"}})
 ---
+kind: DaemonSet
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    kapp.k14s.io/disable-default-label-scoping-rules: ""
 spec:
   template:
     spec:
